@@ -71,25 +71,27 @@ class WallPaperController extends GetxController {
 
     
       popularWallList = wallpaperList
-          .where((c) => c.wallpaperType == "Popular")
+          .where((c) => c.type == "Popular")
           .toList()
           .reversed
           .toList();
 
       trendingWallList = wallpaperList
-          .where((c) => c.wallpaperType == "Trending")
+          .where((c) => c.type == "Trending")
           .toList()
           .reversed
           .toList();
 
       feauredNWallList = wallpaperList
-          .where((c) => c.wallpaperType == "Featured")
+          .where((c) => c.type == "Featured")
           .toList()
           .reversed
           .toList();
 
       //   favWallList.value =
       // wallpaperList.where((c) => c.isFavorite).toList();
+
+     
 
       return wallList;
     });
@@ -170,7 +172,7 @@ class WallPaperController extends GetxController {
 
   List<WallpaperModel> getListForType(String typeName) {
     return wallpaperList
-        .where((e) => e.wallpaperType!.toLowerCase() == typeName.toLowerCase())
+        .where((e) => e.type!.toLowerCase() == typeName.toLowerCase())
         .toList();
   }
 }

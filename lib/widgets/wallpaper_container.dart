@@ -21,17 +21,19 @@ class _WallpaperContainerState extends State<WallpaperContainer> {
    Image? myImage;
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
-      myImage= Image.network(widget.wallpaperModelMain.getImageURLLow
-      ,filterQuality: FilterQuality.low
+    
+      myImage= Image.network(widget.wallpaperModelMain.getImgUrl
+      
+     
       ,fit: BoxFit.cover,
        );
      
   }
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
+   
     super.didChangeDependencies();
      precacheImage(myImage!.image, context);
   }
@@ -45,7 +47,7 @@ class _WallpaperContainerState extends State<WallpaperContainer> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  ViewWallpaperScreen(wallpaperModel: widget.wallpaperModelMain)),
+                  ViewWallpaperScreen(wallpaperModel: widget.wallpaperModelMain,image: myImage!,)),
         );
 
         // adMobService.interstitialAdLoad();
@@ -60,7 +62,12 @@ class _WallpaperContainerState extends State<WallpaperContainer> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child:myImage
+          child: FadeInImage.assetNetwork(
+                placeholder: 'assets/gif/loading_ligth.gif',
+                image: widget.wallpaperModelMain.getImgUrl
+     
+      ,fit: BoxFit.cover,
+       )
           
           //  ProgressiveImage(
           //     fit: BoxFit.cover,

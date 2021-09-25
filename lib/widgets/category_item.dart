@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:progressive_image/progressive_image.dart';
 
 import '../constants.dart';
 

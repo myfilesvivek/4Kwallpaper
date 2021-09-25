@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:wallpaper_app/constants.dart';
 
 class SearchBar extends StatelessWidget {
-   List<Color> _colors = [orange,pink];
-    List<double> _stops = [0.0, 0.7];
+  final List<Color> _colors = [orange,pink];
+  final  List<double> _stops = [0.0, 0.7];
   final Function()? onPressed;
   SearchBar({@required this.onPressed});
   @override

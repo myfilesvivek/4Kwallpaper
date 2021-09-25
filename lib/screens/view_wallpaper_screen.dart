@@ -21,8 +21,9 @@ import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 
 class ViewWallpaperScreen extends StatefulWidget {
   final WallpaperModel wallpaperModel;
+  final Image image;
 
-  ViewWallpaperScreen({required this.wallpaperModel});
+  ViewWallpaperScreen({required this.wallpaperModel,required this.image});
 
   @override
   _ViewWallpaperScreenState createState() => _ViewWallpaperScreenState();
@@ -290,16 +291,21 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
                 hideScreenWidget = !hideScreenWidget;
               });
             },
-            child: ProgressiveImage(
-              fit: BoxFit.cover,
-              placeholder: AssetImage('assets/gif/shimmereffect.gif'),
-              // size: 1.87KB
-              thumbnail: NetworkImage(widget.wallpaperModel.imageURLLow!),
-              // size: 1.29MB
-              image: NetworkImage(widget.wallpaperModel.getImgUrl),
+            child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-            ),
+                  height: MediaQuery.of(context).size.height,
+              child: widget.image)
+            
+            // ProgressiveImage(
+            //   fit: BoxFit.cover,
+            //   placeholder: AssetImage('assets/gif/shimmereffect.gif'),
+            //   // size: 1.87KB
+            //   thumbnail: NetworkImage(widget.wallpaperModel.imageURLLow!),
+            //   // size: 1.29MB
+            //   image: NetworkImage(widget.wallpaperModel.getImgUrl),
+            //   width: MediaQuery.of(context).size.width,
+            //   height: MediaQuery.of(context).size.height,
+            // ),
           ),
           isApplying
               ? Center(
