@@ -11,38 +11,61 @@ class ColorsWallScreen extends StatefulWidget {
 }
 
 class _ColorsWallScreenState extends State<ColorsWallScreen> {
-  var colorsData = <WallpaperModel>[];
+  var colorsWallpaperData = <WallpaperData>[];
+
+  // List<ColorData>? colorsList;
+
+  String? colortop;
 
   int _selectedIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: StreamBuilder<Object>(
-          stream: colorConroller.getColorList(),
+      child: FutureBuilder<List<ColorData>>(
+          future: colorConroller.getColorList(),
           builder: (context, snapshot) {
-            final colModelList = <ColorModel>[];
-            if (snapshot.hasData) {
-              final myColors = snapshot.data as List<ColorModel>;
-              colModelList.addAll(myColors.map((e) => ColorModel(
-                    colorName: e.colorName,
-                    colorCode: e.colorCode,
-                  )));
-              colorsData.clear();
-              colorsData.addAll(colorConroller
-                  .getWallpaperColor(
-                      colModelList[_selectedIndex].colorName.toString())
-                  .reversed
-                  .toList());
-            } else {
-              return Center(child: CircularProgressIndicator());
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(pink),
+                ),
+              );
             }
-            String colortop =
-                colModelList[_selectedIndex].colorCode!.replaceAll('#', '0xff');
+
+            final colModelList = <ColorData>[];
+
+            final myColors = snapshot.data as List<ColorData>;
+
+            colModelList.addAll(myColors.map(
+                (e) => ColorData(e.id, e.colorCode, e.colorName, e.priority)));
+
+            colortop =
+                colModelList[_selectedIndex].colorCode.replaceAll('#', '0xff');
+
+            colorsWallpaperData.clear();
+            colorsWallpaperData.addAll(colorConroller
+                .getWallpaperColor(
+                    colModelList[_selectedIndex].colorName.toString())
+                .reversed
+                .toList());
+
+            // colorConroller.getColorList().then((value) {
+            //   setState(() {
+            //     colorsList = value;
+            //     colortop = colorsList![_selectedIndex]
+            //         .colorCode
+            //         .replaceAll('#', '0xff');
+            //   });
+
+            //   colorsData.clear();
+
+            //   colorsData.addAll(colorConroller
+            //       .getWallpaperColor(
+            //           colorsList![_selectedIndex].colorName.toString())
+            //       .reversed
+            //       .toList());
+            // });
             return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
@@ -52,14 +75,14 @@ class _ColorsWallScreenState extends State<ColorsWallScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ColorItem(
-                          color: Color(int.parse(colortop)),
+                          color: Color(int.parse(colortop!)),
                           showTick: false,
                         ),
                         SizedBox(
                           width: 10,
                         ),
                         Text(
-                          "${colModelList[_selectedIndex].colorName.toString()}",
+                          "${myColors[_selectedIndex].colorName.toString()}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -93,7 +116,7 @@ class _ColorsWallScreenState extends State<ColorsWallScreen> {
                                   width: MediaQuery.of(context).size.width,
                                   child: GridView.builder(
                                       padding: EdgeInsets.all(10),
-                                      itemCount: colModelList.length,
+                                      itemCount: myColors.length,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                               // childAspectRatio: (0.3 / 0.3),
@@ -101,8 +124,8 @@ class _ColorsWallScreenState extends State<ColorsWallScreen> {
                                               mainAxisSpacing: 9,
                                               crossAxisSpacing: 9),
                                       itemBuilder: (context, index) {
-                                        String color = colModelList[index]
-                                            .colorCode!
+                                        String color = myColors[index]
+                                            .colorCode
                                             .replaceAll('#', '0xff');
                                         return ColorItem(
                                           showTick: true,
@@ -124,9 +147,9 @@ class _ColorsWallScreenState extends State<ColorsWallScreen> {
                       ),
                     ),
                     Expanded(
-                      child: colorsData.isNotEmpty
+                      child: colorsWallpaperData.isNotEmpty
                           ? GridView.builder(
-                              itemCount: colorsData.length,
+                              itemCount: colorsWallpaperData.length,
                               padding:
                                   EdgeInsets.only(top: 10, left: 5, right: 5),
                               gridDelegate:
@@ -142,7 +165,8 @@ class _ColorsWallScreenState extends State<ColorsWallScreen> {
                               ),
                               itemBuilder: (context, index) =>
                                   WallpaperContainer(
-                                    wallpaperModelMain: colorsData[index],
+                                    wallpaperModelMain:
+                                        colorsWallpaperData[index],
                                   ))
                           : Center(
                               child: Text("No wallpaper found"),

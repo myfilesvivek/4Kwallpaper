@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallpaper_app/constants.dart';
+import 'package:wallpaper_app/controllers/wallpaper_controller.dart';
 import 'package:wallpaper_app/models/wallpaper_model.dart';
 import 'package:wallpaper_app/widgets/wallpaper_container.dart';
 
 class CategoryWallpaperScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<WallpaperModel> categoryWallpaper = [];
+    List<WallpaperData> categoryWallpaper = [];
     var categoryName = Get.arguments;
+
+      // final WallPaperController wallPapaerController = Get.put(WallPaperController());
 
     categoryWallpaper
         .addAll(wallPapaerController.getListFromCategories(categoryName).reversed);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallpaper_app/constants.dart';
+import 'package:wallpaper_app/controllers/category_controller.dart';
 import 'package:wallpaper_app/models/category_model.dart';
 import 'package:wallpaper_app/screens/category_wallpaper_screen.dart';
 import 'package:wallpaper_app/widgets/category_item.dart';
@@ -10,6 +11,9 @@ class CategoryScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+   // CategoryController categoryController = CategoryController.instance;
+  //  final CategoryController categoryController = Get.put(CategoryController());
+   
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -17,27 +21,49 @@ class CategoryScreen extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
-        body: StreamBuilder<Object>(
-          stream: categoryController.getAllCategory(),
+        body: FutureBuilder(
+          future: categoryController.getAllCategory(),
           builder: (context, snapshot) {
-             final catModelLIst =   <CategoryModel>[];
-                if(snapshot.hasData){
-                  final myCategories = snapshot.data as List<CategoryModel>;
+           
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(pink),),);
+            }
 
-                  catModelLIst.addAll(myCategories.map((e) {
-                    return CategoryModel(
-                      e.categoryName,
-                      e.categoryImageUrl,
-                      e.categoryPriority,
-                      e.totalWallpapers
-                    );
-                  }),
-                  );
+            
+           
+                if(!snapshot.hasData){
+                     return Center(child: Text('error no data'));
                 }
+                 if(snapshot.hasError){
+                     return Text('error');
+                }
+                  
+                  //  final catModelLIst =   <CategoryData>[];
+                 
+
+                  // catModelLIst.addAll(myCategories.map((e) {
+                  //   return CategoryData(
+                  //     e.id,
+                  //     e.categoryName,
+                  //      e.desc,
+                  //     e.priority,
+                  //     e.thumbnail,
+                  //     e.totalWallpapers,
+                     
+                     
+                    
+                      
+                  //   );
+                  // }),
+                  // );
+
+                   final myCategories = snapshot.data as List<CategoryData>;
+                
+                 // print(myCategories.);
 
             return GridView.builder(
             
-                itemCount: catModelLIst.length,
+                itemCount: myCategories.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount:
                       MediaQuery.of(context).orientation == Orientation.landscape
@@ -50,14 +76,18 @@ class CategoryScreen extends StatelessWidget {
                 itemBuilder: (context, index) => InkWell(
                   onTap: (){
                    // print(catModelLIst[index].categoryName);
-                    Get.to(()=>CategoryWallpaperScreen(),arguments: catModelLIst[index].categoryName);
+                    Get.to(()=>CategoryWallpaperScreen(),arguments: myCategories[index].categoryName);
                   },
                   child: CategoryItem(
-                    imageUrl:catModelLIst[index].categoryImageUrl ,
-                    categoryName: catModelLIst[index].categoryName ,
-                    totalWallpaerNumber:catModelLIst[index].totalWallpapers ,
+                    imageUrl:myCategories[index].thumbnail ,
+                    categoryName: myCategories[index].categoryName ,
+                   
                   ),
                 ));
+                
+             
+          
+         
           }
         ));
   }

@@ -1,4 +1,4 @@
-package com.example.wallpaper_app
+package com.appelopment.hdwallpaper
 
 import io.flutter.embedding.android.FlutterActivity
 
@@ -6,7 +6,7 @@ import android.os.Bundle
 
 
 
-// private const val CHANNEL = "com.example.wallpaper_app/wallpapers"
+// private const val CHANNEL = "com.appelopment.hdwallpaper/wallpapers"
 
 
 class MainActivity: FlutterActivity() {

@@ -7,7 +7,7 @@ import 'package:wallpaper_app/models/wallpaper_model.dart';
 
 class FavWallpaperManager extends GetxController{
 
-void addToFav(WallpaperModel wallpaper){
+void addToFav(WallpaperData wallpaper){
 
   var list =  Hive.box(FAV_BOX).get(FAV_LIST_KEY);
 
@@ -22,7 +22,7 @@ void addToFav(WallpaperModel wallpaper){
 
 }
 
-void removeFromFav(WallpaperModel wallpaper){
+void removeFromFav(WallpaperData wallpaper){
    
 
 
@@ -37,7 +37,7 @@ void removeFromFav(WallpaperModel wallpaper){
 }
 
 
-bool isFavorite(WallpaperModel wallpaper){
+bool isFavorite(WallpaperData wallpaper){
 
  
 

@@ -39,7 +39,7 @@ class WallPaperSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
 
-       List<WallpaperModel> categoryWallpaper = [];
+       List<WallpaperData> categoryWallpaper = [];
   
 
     categoryWallpaper

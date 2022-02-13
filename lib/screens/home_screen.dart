@@ -6,14 +6,17 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:progressive_image/progressive_image.dart';
 import 'package:wallpaper_app/constants.dart';
+import 'package:wallpaper_app/controllers/wallpaper_controller.dart';
 
 import 'package:wallpaper_app/models/wallpaper_model.dart';
+import 'package:wallpaper_app/routes/api.routes.dart';
 
 import 'package:wallpaper_app/screens/wallpaper_type_screen.dart';
 import 'package:wallpaper_app/utils/wallpaper_search.dart';
 
 import 'package:wallpaper_app/widgets/search_bar.dart';
 import 'package:wallpaper_app/widgets/wallpaper_container.dart';
+import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 
@@ -45,25 +48,44 @@ class _HomeScreenState extends State<HomeScreen> {
       
     }
 
+final client = http.Client();
+
+          final headers = {
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+     "Connection": "keep-alive",
+    "Access-Control-Allow-Origin": "*"
+  };
 
 
 
   Widget build(BuildContext context) {
+
+      
   
     return Scaffold(
-      body: StreamBuilder<Object>(
-          stream: wallPapaerController.getAllWallPaper(),
+      body: FutureBuilder<List<WallpaperData>>(
+          future: wallPapaerController.getAllWallPaper(),
           builder: (context, snapshot) {
             //  final wallAllList = <WallpaperModel>[];
 
-            if (snapshot.hasData) {
-              // final mywall = snapshot.data as List<WallpaperModel>;
-              //   wallAllList.addAll(wallPapaerController.popularWallList);
+            if(snapshot.connectionState == ConnectionState.waiting){
+          
+              return  Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(pink),),);
+            }
+
+            if(snapshot.hasError){
+              
+              return Text('Error');
+            }
+
              
-            } else {
-              Center(
-                child: CircularProgressIndicator(),
-              );
+
+
+            if (!snapshot.hasData) {
+            
+              return Text('No data found, Please try again later');
+             
             }
 
             return CustomScrollView(
@@ -129,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     AssetImage('assets/gif/shimmereffect.gif'),
 
                                 // size: 1.87KB
-                                thumbnail: NetworkImage(urlLow),
+                                thumbnail: NetworkImage(url),
                                 // size: 1.29MB
                                 image: NetworkImage(url),
                                 width: MediaQuery.of(context).size.width,
@@ -146,30 +168,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     Get.to(() => WallpaperTypeScreen(), arguments: "Popular");
                   },
                 ),
-                HomeHorizonalScrollView(wallPapaerController.popularWallList),
+                HomeHorizonalScrollView(getFilteredListWallpaper(snapshot.data,"Popular")),
                 CustomRow(
                   "Trending now",
                   onPressed: () {
                     Get.to(() => WallpaperTypeScreen(), arguments: "Trending");
                   },
                 ),
-                HomeHorizonalScrollView(wallPapaerController.trendingWallList),
+                HomeHorizonalScrollView(getFilteredListWallpaper(snapshot.data,"Trending")),
                 CustomRow(
                   "Featured now",
                   onPressed: () {
                     Get.to(() => WallpaperTypeScreen(), arguments: "Featured");
                   },
                 ),
-                HomeHorizonalScrollView(wallPapaerController.feauredNWallList),
+               
+                HomeHorizonalScrollView(getFilteredListWallpaper(snapshot.data,"Featured")),
               ],
             );
           }),
     );
   }
-}
+
+ List<WallpaperData> getFilteredListWallpaper(wallpaperList,String categoryName){
+    return wallpaperList
+          .where((c) => c.type == categoryName)
+          .toList()
+          .reversed
+          .toList();
+  }
+ }
 
 class HomeHorizonalScrollView extends StatelessWidget {
-  final List<WallpaperModel> _wapperModelTypeList;
+  final List<WallpaperData> _wapperModelTypeList;
 
   HomeHorizonalScrollView(this._wapperModelTypeList);
 

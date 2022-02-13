@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wallpaper_app/controllers/wallpaper_controller.dart';
 
 import 'package:wallpaper_app/widgets/wallpaper_container.dart';
 
@@ -8,13 +10,14 @@ import '../constants.dart';
 class LikedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+     
     //  List<WallpaperModel> likedWallpaper = [];
 
     //     likedWallpaper
     //       .addAll(wallPapaerController.likedListItems.value);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Liked Wallpapers"),
+        title: Text("Liked Wallpapers",style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Obx(() => wallPapaerController.likedListItems.isNotEmpty
           ? GridView.builder(

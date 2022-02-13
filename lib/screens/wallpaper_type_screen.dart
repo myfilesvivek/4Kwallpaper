@@ -7,8 +7,10 @@ import 'package:wallpaper_app/widgets/wallpaper_container.dart';
 class WallpaperTypeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var typeWallpeprList = <WallpaperModel>[];
+    var typeWallpeprList = <WallpaperData>[];
     var typeName = Get.arguments;
+
+    print(typeName);
 
     typeWallpeprList.addAll(wallPapaerController.getListForType(typeName).reversed);
 

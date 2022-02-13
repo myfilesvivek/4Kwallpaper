@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:325509406164:android:88e84c1260026af7178a41",
+        "mobilesdk_app_id": "1:325509406164:android:d8a1f789a310a425178a41",
         "android_client_info": {
-          "package_name": "com.example.wallpaper_app"
+          "package_name": "com.appelopment.hdwallpaper"
         }
       },
       "oauth_client": [

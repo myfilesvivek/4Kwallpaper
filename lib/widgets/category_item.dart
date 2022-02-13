@@ -5,12 +5,13 @@ import '../constants.dart';
 class CategoryItem extends StatelessWidget {
   final imageUrl;
   final categoryName;
-  final int totalWallpaerNumber;
+ // final int totalWallpaerNumber;
 
   CategoryItem(
-      {this.imageUrl, this.categoryName, required this.totalWallpaerNumber});
+      {this.imageUrl, this.categoryName});
   @override
   Widget build(BuildContext context) {
+    var totalCatWallpaper = wallPapaerController.wallpaperList.where((element) => element.category == categoryName).toList().length;
     return Container(
       margin: EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -68,7 +69,7 @@ class CategoryItem extends StatelessWidget {
                 height: 6,
               ),
               Text(
-                totalWallpaerNumber.toString(),
+                totalCatWallpaper.toString(),
                 style: TextStyle(fontSize: 10, color: Colors.grey.shade200),
               )
             ],

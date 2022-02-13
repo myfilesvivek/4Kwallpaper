@@ -14,16 +14,17 @@ import 'package:wallpaper_app/constants.dart';
 import 'package:wallpaper_app/controllers/wallpaper_controller.dart';
 
 import 'package:wallpaper_app/models/wallpaper_model.dart';
+import 'package:wallpaper_app/providers/ad_provider.dart';
 
 import 'package:wallpaper_app/widgets/view_wallpaper_back_button.dart';
 import 'package:wallpaper_app/widgets/view_wallpaper_main_button.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 
 class ViewWallpaperScreen extends StatefulWidget {
-  final WallpaperModel wallpaperModel;
+  final WallpaperData wallpaperModel;
   final Image image;
 
-  ViewWallpaperScreen({required this.wallpaperModel,required this.image});
+  ViewWallpaperScreen({required this.wallpaperModel, required this.image});
 
   @override
   _ViewWallpaperScreenState createState() => _ViewWallpaperScreenState();
@@ -57,12 +58,8 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
 
   late double _scale;
 
-  InterstitialAd? _interstitialAdLike;
-
   @override
   void initState() {
-    interstitialAdLoadLike();
-
     _controller = AnimationController(
         vsync: this,
         duration: Duration(milliseconds: 200),
@@ -74,8 +71,7 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
 
     super.initState();
 
-    // interstitialAdLoadCount();
-    interstitialAdLoad();
+    interstitialVideoAdLoad();
   }
 
   bool hideScreenWidget = true;
@@ -86,59 +82,7 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
 
   InterstitialAd? _interstitialAdCount;
 
-  void interstitialAdLoadCount() async {
-    await InterstitialAd.load(
-        adUnitId: "ca-app-pub-3940256099942544/8691691433",
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            print('$ad loaded');
-            this._interstitialAdCount = ad;
-            //this._interstitialAd!.show();
-            _numInterstitialLoadAttempts = 0;
-            _interstitialAdCount!.setImmersiveMode(true);
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error.');
-            _numInterstitialLoadAttempts += 1;
-            _interstitialAdCount = null;
-            if (_numInterstitialLoadAttempts <= 3) {
-              interstitialAdLoadCount();
-            }
-          },
-        ));
-  }
-
-  void showInterstitialAdCount() {
-    if (_interstitialAdCount == null) {
-      print('Warning: attempt to show interstitial before loaded.');
-      return;
-    }
-    _interstitialAdCount!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (InterstitialAd ad) =>
-          print('ad onAdShowedFullScreenContent.'),
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
-
-        ad.dispose();
-        interstitialAdLoadCount();
-        //  _createInterstitialAd();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
-        ad.dispose();
-
-        //   _createInterstitialAd();
-        interstitialAdLoadCount();
-      },
-    );
-    _interstitialAdCount!.show();
-    _interstitialAdCount = null;
-
-    // interstitialAdLoad();
-  }
-
-  void interstitialAdLoad() async {
+  void interstitialVideoAdLoad() async {
     await InterstitialAd.load(
         adUnitId: "ca-app-pub-3940256099942544/8691691433",
         request: AdRequest(),
@@ -156,7 +100,7 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
             _interstitialAd = null;
 
             if (_numInterstitialLoadAttempts <= 3) {
-              interstitialAdLoad();
+              interstitialVideoAdLoad();
             }
           },
         ));
@@ -184,7 +128,7 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
         print('$ad onAdDismissedFullScreenContent.');
 
         ad.dispose();
-        interstitialAdLoad();
+        interstitialVideoAdLoad();
         //  _createInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
@@ -192,7 +136,7 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
         ad.dispose();
 
         //   _createInterstitialAd();
-        interstitialAdLoad();
+        interstitialVideoAdLoad();
       },
     );
     _interstitialAd!.show();
@@ -201,70 +145,24 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
     // interstitialAdLoad();
   }
 
-  void interstitialAdLoadLike() async {
-    print("ON");
-    await InterstitialAd.load(
-        adUnitId: "ca-app-pub-3940256099942544/1033173712",
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            print('$ad loaded');
-            _interstitialAdLike = ad;
-
-            //this._interstitialAd!.show();
-            _numInterstitialLoadAttempts = 0;
-            _interstitialAdLike!.setImmersiveMode(true);
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error.');
-            _numInterstitialLoadAttempts += 1;
-            _interstitialAdLike = null;
-            if (_numInterstitialLoadAttempts <= 3) {
-              interstitialAdLoadLike();
-            }
-          },
-        ));
-  }
-
-  void showInterstitialAdLike() {
-    if (_interstitialAdLike == null) {
-      print('Warning: attempt to show interstitial before loaded.');
-      return;
-    }
-    _interstitialAdLike!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (InterstitialAd ad) =>
-          print('ad onAdShowedFullScreenContent.'),
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
-
-        ad.dispose();
-        interstitialAdLoadLike();
-        //  _createInterstitialAd();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
-        ad.dispose();
-
-        //   _createInterstitialAd();
-        interstitialAdLoadLike();
-      },
-    );
-
-    _interstitialAdLike!.show();
-    // _interstitialAdLike = null;
-  }
-
   @override
   void dispose() {
-    _interstitialAd!.dispose();
-    _interstitialAdLike!.dispose();
-    // _interstitialAdCount!.dispose();
+    if (_interstitialAd != null) {
+      _interstitialAd!.dispose();
+    }
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    interstitialAdLoadLike();
+    //  interstitialAdLoadLike();
+    var adProvider = Get.put(AdProvider());
+    var wallProvider = Get.put(WallPaperController());
+    
+    adProvider.interstitialAdLoadLike();
+    adProvider.interstitialAdLoadApplyWallpaper();
+
     final _database = FirebaseDatabase.instance.reference();
 
     var likeController = Get.put(WallPaperController());
@@ -281,32 +179,35 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
         height: MediaQuery.of(context).size.height,
         child: Stack(children: [
           GestureDetector(
-            onLongPress: () {
-              setState(() {
-                hideScreenWidget = !hideScreenWidget;
-              });
-            },
-            onLongPressEnd: (d) {
-              setState(() {
-                hideScreenWidget = !hideScreenWidget;
-              });
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-              child: widget.image)
-            
-            // ProgressiveImage(
-            //   fit: BoxFit.cover,
-            //   placeholder: AssetImage('assets/gif/shimmereffect.gif'),
-            //   // size: 1.87KB
-            //   thumbnail: NetworkImage(widget.wallpaperModel.imageURLLow!),
-            //   // size: 1.29MB
-            //   image: NetworkImage(widget.wallpaperModel.getImgUrl),
-            //   width: MediaQuery.of(context).size.width,
-            //   height: MediaQuery.of(context).size.height,
-            // ),
-          ),
+              onLongPress: () {
+                setState(() {
+                  hideScreenWidget = !hideScreenWidget;
+                });
+              },
+              onLongPressEnd: (d) {
+                setState(() {
+                  hideScreenWidget = !hideScreenWidget;
+                });
+              },
+              child: Hero(
+                tag: "wall${widget.wallpaperModel.id}",
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: widget.image),
+              )
+
+              // ProgressiveImage(
+              //   fit: BoxFit.cover,
+              //   placeholder: AssetImage('assets/gif/shimmereffect.gif'),
+              //   // size: 1.87KB
+              //   thumbnail: NetworkImage(widget.wallpaperModel.imageURLLow!),
+              //   // size: 1.29MB
+              //   image: NetworkImage(widget.wallpaperModel.getImgUrl),
+              //   width: MediaQuery.of(context).size.width,
+              //   height: MediaQuery.of(context).size.height,
+              // ),
+              ),
           isApplying
               ? Center(
                   child: Image.asset(
@@ -343,16 +244,20 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
                                 onTap: () {
                                   requestPermission();
 
+                                  if (adProvider.isLikePageAdLoaded) {
+                                    adProvider.fullPageLikeAd.show();
+                                  }
+
                                   if (widget.wallpaperModel.isFavorite.value ==
                                       false) {
                                     bool isadd = likeController
-                                        .addItem(widget.wallpaperModel.id!);
-                                    if (isadd) showInterstitialAdLike();
+                                        .addItem(widget.wallpaperModel.id);
+                                    //if (isadd) showInterstitialAdLike();
                                   } else {
                                     bool isrev = likeController
-                                        .removeItem(widget.wallpaperModel.id!);
+                                        .removeItem(widget.wallpaperModel.id);
 
-                                    if (isrev) showInterstitialAdLike();
+                                    //if (isrev) showInterstitialAdLike();
                                   }
                                 },
                                 child: Transform.scale(
@@ -381,15 +286,18 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
                                 GestureDetector(
                                     onTap: () async {
                                       playGradiantAnim();
-                                      await _downloadwallpaper(context);
+                                      await _downloadwallpaper(context).then((value) {
 
-                                      _database
-                                          .child("images")
-                                          .child(widget
-                                              .wallpaperModel.wallpaperKey!)
-                                          .update({
-                                        "downloads": ServerValue.increment(1)
+                                        wallProvider.updateWallpaperDownload(widget.wallpaperModel.id);
                                       });
+
+                                      // _database
+                                      //     .child("images")
+                                      //     .child(widget
+                                      //         .wallpaperModel.wallpaperKey!)
+                                      //     .update({
+                                      //   "downloads": ServerValue.increment(1)
+                                      // });
 
                                       // if (_interstitialAd == null) {
                                       //   interstitialAdLoad();
@@ -457,11 +365,13 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
                             //       ),
                             GestureDetector(
                               onTap: () async {
-                            await setWallpaper(
-                                    context, widget.wallpaperModel.getImgUrl);
+                                await setWallpaper(
+                                    context, widget.wallpaperModel.url);
 
-                                    showInterstitialAdLike();
-                                   
+                                //  showInterstitialAdLike();
+                                if (adProvider.isApplyWallpaperPageAdLoaded) {
+                                  adProvider.fullPageApplyWallpaperAd.show();
+                                }
                               },
                               child: ViewWallpaerMainButton(
                                 icon: 'assets/images/paintroller.png',
@@ -497,31 +407,26 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
       actions: [
         CupertinoActionSheetAction(
             onPressed: () {
-                 setState(() {
+              setState(() {
                 isApplying = true;
               });
               Navigator.of(context).pop(SetWallpaerAs.Home);
-
-           
-           
             },
             child: Text('Home')),
         CupertinoActionSheetAction(
             onPressed: () {
-                 setState(() {
+              setState(() {
                 isApplying = true;
               });
               Navigator.of(context).pop(SetWallpaerAs.Lock);
-            
             },
             child: Text('Lock')),
         CupertinoActionSheetAction(
             onPressed: () {
-                 setState(() {
+              setState(() {
                 isApplying = true;
               });
               Navigator.of(context).pop(SetWallpaerAs.Both);
-           
             },
             child: Text('Both')),
       ],
@@ -530,38 +435,31 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
     SetWallpaerAs option = await showCupertinoModalPopup(
         context: context, builder: (context) => actionSheet);
 
-
-
     var cachedImage = await DefaultCacheManager().getSingleFile(url);
 
-    // int location = WallpaperManagerFlutter.HOME_SCREEN;
-    try {
+    if (option != null) {
       WallpaperManagerFlutter()
-          .setwallpaperfromFile(cachedImage, _setAs[option] ?? 1);
+          .setwallpaperfromFile(cachedImage, _setAs[option] ?? 1)
+          .then((value) {
+        Get.snackbar("Wallpaper set succefully", "",
+            backgroundColor: lgGreen,
+            colorText: darkGreen,
+            borderWidth: 1,
+            borderColor: darkGreen);
 
+        setState(() {
+          isApplying = false;
+        });
+      });
+    }
+    try {
       // print('Wallpaper Updated.... $result');
     } on PlatformException catch (e) {
       print("Failed to Set Wallpaper: '${e.message}'.");
-         setState(() {
-                isApplying = false;
-              });
-    
+      setState(() {
+        isApplying = false;
+      });
     }
-    Get.snackbar("Wallpaper set succefully", "",
-    backgroundColor:lgGreen,
-    colorText: darkGreen  ,
-
-    borderWidth: 1,
-    borderColor:darkGreen
-   
-  );
-     
-     
-       setState(() {
-                isApplying = false;
-              });
-  
-    
   }
 
   Future<void> _downloadwallpaper(BuildContext context) async {
@@ -574,19 +472,30 @@ class _ViewWallpaperScreenState extends State<ViewWallpaperScreen>
         });
 
         var imageId = await ImageDownloader.downloadImage(
-            widget.wallpaperModel.getImgUrl,
-            destination: AndroidDestinationType.directoryPictures);
-        setState(() {
-          isDownloading = false;
+                widget.wallpaperModel.url,
+                destination: AndroidDestinationType.directoryPictures)
+            .then((value) {
+          setState(() {
+            isDownloading = false;
+          });
+
+          
+
+          Get.snackbar("Download completed.", "",
+          
+              backgroundColor: Colors.white,
+              mainButton: TextButton(
+                  onPressed: () async {
+                    var path = await ImageDownloader.findPath(value!);
+                    await ImageDownloader.open(path!);
+                  },
+                  child: Text("Open")));
+        }).catchError((error) {
+          setState(() {
+            isDownloading = false;
+          });
+          print(error);
         });
-        Get.snackbar("Download completed.", "",
-            backgroundColor: Colors.white,
-            mainButton: TextButton(
-                onPressed: () async {
-                  var path = await ImageDownloader.findPath(imageId!);
-                  await ImageDownloader.open(path!);
-                },
-                child: Text("Open")));
       } on PlatformException catch (error) {
         print(error);
         setState(() {
